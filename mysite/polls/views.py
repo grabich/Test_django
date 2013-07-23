@@ -24,8 +24,13 @@ class IndexView(generic.ListView):
     context_object_name = 'latest_poll_list'
 
     def get_queryset(self):
-	# return Poll.objects.order_by('-pub_date')[:5]
-	return Poll.objects.filter(pub_date__lte=timezone.now()).order_by('-pub_date')[:5]
+        """
+        Return the last five published polls (not including those set to be
+        published in the future).
+        """
+        return Poll.objects.filter(
+            pub_date__lte=timezone.now()
+        ).order_by('-pub_date')[:5]
 
 #def detail(request, poll_id):
     #return HttpResponse("You're looking at poll %s." % poll_id)
@@ -35,8 +40,10 @@ class DetailView(generic.DetailView):
     template_name = 'polls/detail.html'
 
     def get_queryset(self):
-	"""Isključi sve pollove koji nisu još objavljeni"""
-	return Poll.objects.filter(pob_date__lte = timezone.now())
+        """
+        Excludes any polls that aren't published yet.
+        """
+        return Poll.objects.filter(pub_date__lte=timezone.now())
 
 #def results(request, poll_id):
     #poll = get_object_or_404(Poll, pk=poll_id)
