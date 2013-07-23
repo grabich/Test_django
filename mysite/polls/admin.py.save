@@ -1,0 +1,10 @@
+from django.contrib import admin
+from polls.models import Poll
+
+# admin.site.register(Poll)
+
+class PollAdmin(admin.ModelAdmin):
+    fieldsets = [
+        (None, 'pub_date','question']
+
+admin.site.register(Poll, PollAdmin)

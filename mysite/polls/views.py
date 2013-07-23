@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.views import generic
+from django.utils import timezone
 
 from polls.models import Poll, Choice
 
@@ -23,7 +24,8 @@ class IndexView(generic.ListView):
     context_object_name = 'latest_poll_list'
 
     def get_queryset(self):
-	return Poll.objects.order_by('-pub_date')[:5]
+	# return Poll.objects.order_by('-pub_date')[:5]
+	return Poll.objects.filter(pub_date__lte=timezone.now()).order_by('-pub_date')[:5]
 
 #def detail(request, poll_id):
     #return HttpResponse("You're looking at poll %s." % poll_id)
@@ -31,6 +33,10 @@ class IndexView(generic.ListView):
 class DetailView(generic.DetailView):
     model = Poll
     template_name = 'polls/detail.html'
+
+    def get_queryset(self):
+	"""Isključi sve pollove koji nisu još objavljeni"""
+	return Poll.objects.filter(pob_date__lte = timezone.now())
 
 #def results(request, poll_id):
     #poll = get_object_or_404(Poll, pk=poll_id)
